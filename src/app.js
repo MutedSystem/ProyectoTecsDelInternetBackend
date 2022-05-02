@@ -1,16 +1,19 @@
 import express from 'express';
 import morgan from 'morgan';
 
-import productRoutes from './routes/product.route';
+import productRoutes from '../src/routes/product.routes';
+import authRoutes from './routes/auth.routes';
+import buyRoutes from './routes/buy.routes';
 
 const app = express();
 
 app.use(morgan('dev'));
+app.use(express.json());
 
-app.use('/product/',productRoutes);
+app.use('/products', productRoutes);
 
-app.get('/',(req,res) => {
-    res.send('holiiiiiiii');
-})
+app.use('/auth', authRoutes);
+
+app.use('/buy',buyRoutes);
 
 export default app;

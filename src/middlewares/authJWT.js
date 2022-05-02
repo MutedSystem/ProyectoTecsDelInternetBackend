@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 export const verifyUserToken = (req, res, next) => {
     try {
 
-        let token = req.headers["x-access-token"];
+        const token = req.headers["x-access-token"];
 
         if (!token){
             return res.status(403).json({ message: "No token provided" });
@@ -15,9 +15,9 @@ export const verifyUserToken = (req, res, next) => {
                     message: 'invalid token'
                 });
     
-                let id = tokenDecoded.id;
+                const id = tokenDecoded.id;
     
-                let query = "SELECT COUNT(`idUsuario`) AS numberOfUsers FROM usuario WHERE `idUsuario` LIKE '" + id + "'";
+                const query = "SELECT COUNT(`idUsuario`) AS numberOfUsers FROM usuario WHERE `idUsuario` LIKE '" + id + "'";
                 database.query(query, (error, results) => {
                     if (error) return res.status(500).json({ message: 'Bad query' });
                     if (results[0].numberOfUsers > 0) {
