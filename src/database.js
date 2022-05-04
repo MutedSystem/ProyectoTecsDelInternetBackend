@@ -1,10 +1,10 @@
 import mysql from 'mysql';
 
-const database = mysql.createPool({
+const database = mysql.createConnection({
     host : 'localhost',
     user : 'root',
     password : '',
-    database : 'lme3h_database',
+    database : 'crearte',
     multipleStatements: true
 });
 

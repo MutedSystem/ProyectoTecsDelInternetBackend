@@ -1,5 +1,3 @@
-let secret = "UAvuyUICl9GO4irZ0W0Q";
-
-export default config = {
-    SECRET : secret
+export default {
+    SECRET: 'B9kZ?[vA}$X%B:tDw6YkwuzC2eZ,k+8dY_[9vQ9/gw:Tn?X[H&'
 }
