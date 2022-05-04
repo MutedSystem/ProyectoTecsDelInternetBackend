@@ -2,7 +2,16 @@ import database from "../database";
 
 export const createProduct = (req, res) => {
     try {
-
+        if(!req.body.name || !req.body.description || !req.body.price || !req.body.photosUrl){
+            return res.status(400);
+        }else{
+            let {
+                name, 
+                description,
+                price,
+                photosUrl
+            } = req.body;
+        }
     } catch (error) {
         return res.status(500);
     }
