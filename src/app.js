@@ -13,6 +13,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors());
 
+app.use('/productImages',express.static(__dirname+"/productsImage/"));
 
 app.use('/products', productRoutes);
 
