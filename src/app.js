@@ -9,14 +9,16 @@ import buyRoutes from './routes/buy.routes';
 
 const app = express();
 
-app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(cors());
+
+app.use('/productImages',express.static(__dirname+"/productsImage/"));
 
 app.use('/products', productRoutes);
 
 app.use('/auth', authRoutes);
 
-app.use('/buy',buyRoutes);
+app.use('/buy', buyRoutes);
 
 export default app;

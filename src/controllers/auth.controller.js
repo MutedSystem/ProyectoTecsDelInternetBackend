@@ -4,16 +4,12 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-export const asd = (req, res) => {
-    return res.json({
-        message: 'asdsd'
-    });
-}
-
 export const singup = (req, res) => {
     try {
         if (!req.body.email || !req.body.password || !req.body.name || !req.body.phone || !req.body.direction || !req.body.role) {
-            return res.status(400);
+            return res.status(400).json({
+
+            });
         } else {
             const {
                 email,
@@ -55,7 +51,7 @@ export const singup = (req, res) => {
                         database.query(query, values, async (registerError, registerResults) => {
                             if (registerError) {
                                 return res.status(500).json({
-                                    registerError
+                                    message: 'bad query'
                                 });
                             } else {
                                 return res.json({
@@ -70,7 +66,7 @@ export const singup = (req, res) => {
         }
     } catch (error) {
         return res.status(500).json({
-            message: 'bad request'
+            message: 'internal server error'
         });
     }
 }
@@ -88,13 +84,15 @@ export const singin = (req, res) => {
             database.query(query, (getUserInfoError, getInfoUserResult) => {
                 if (getUserInfoError) {
                     return res.status(500).json({
-                        message: 'bad request'
+                        message: 'bad request 1'
                     });
                 } else {
                     if (getInfoUserResult.length >= 1) {
                         bcrypt.compare(password, getInfoUserResult[0].contrasena, (comparePasswordError, isSamePassword) => {
                             if (comparePasswordError) {
-                                return res.status(401);
+                                return res.status(401).json({
+                                    message:'wrong password'
+                                });
                             } else {
                                 if (isSamePassword) {
                                     const token = jwt.sign({
@@ -104,12 +102,16 @@ export const singin = (req, res) => {
                                         token
                                     });
                                 } else {
-                                    return res.status(401);
+                                    return res.status(401).json({
+                                        message: "wrong password"
+                                    });
                                 }
                             }
                         });
                     } else {
-                        return res.status(404);
+                        return res.status(404).json({
+                            message: 'user not found'
+                        });
                     }
                 }
             });
@@ -121,7 +123,7 @@ export const singin = (req, res) => {
         }
     } catch (error) {
         return res.status(500).json({
-            message: 'bad request'
+            message : "internal server error"
         });
     }
 }
