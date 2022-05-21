@@ -6,4 +6,6 @@ const router = Router();
 
 router.post('/',buyController.makeBuy);
 
+router.get('/see/:idUsuario',buyController.seeBuys);
+
 export default router;

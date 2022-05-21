@@ -1,57 +1,57 @@
 import database from "../database";
 
+import * as productDAOs from '../DAO/products.dao';
+
 export const createProduct = (req, res) => {
 
     try {
+        const {
+            name,
+            description,
+            price,
+            state
+        } = req.body;
 
-        const photosUrl = [];
-
-        req.files.forEach(file => {
-            photosUrl.push(("localhost:54215" || process.env.PORT) + "/productImages/" + file.filename);
-        });
-
-        if (!req.body.name || !req.body.description || !req.body.price) {
+        if (!name || !description || !price || !state) {
             return res.status(400).json({
                 message: 'incomplete information'
             });
         } else {
-            const {
-                name,
-                description,
-                price,
-                state
-            } = req.body;
 
-            let query = "INSERT INTO `producto`( `descripcion`, `nombre`, `precio`, `fotos`,`estado`) VALUES (?)";
 
-            let productInfo = [
+            const photosUrl = [];
+
+            req.files.forEach(file => {
+                photosUrl.push(("localhost:54215" || process.env.PORT) + "/productImages/" + file.filename);
+            });
+
+            const productInfo = [
                 [
                     description,
                     name,
                     price,
-                    JSON.stringify({ photosUrl }),
+                    JSON.stringify({
+                        photosUrl
+                    }),
                     state
                 ]
             ];
 
-            database.query(query, productInfo, (addProductError, addProductResponse) => {
-                if (addProductError) {
-                    return res.status(500).json({
-                        message: 'bad query',
-                        addProductError
-                    });
-                } else {
+            productDAOs.createProduct(productInfo)
+                .then(() => {
                     return res.json({
                         message: 'product correctly added'
                     });
-                }
-            });
-
+                })
+                .catch((error) => {
+                    return res.status(error.code).json({
+                        message: error.message
+                    });
+                })
         }
     } catch (error) {
         return res.status(500).json({
-            message: 'internal server error',
-            error
+            message: 'internal server error'
         });
     }
 }
@@ -63,18 +63,17 @@ export const getProduct = (req, res) => {
                 message: 'incompconste data'
             });
         } else {
-            const query = "SELECT nombre, precio, fotos FROM producto WHERE idProducto='" + req.params.idProducto + "';";
-            database.query(query, (getProductError, product) => {
-                if (getProductError) {
-                    return res.status(500).json({
-                        message: 'bad request'
-                    });
-                } else {
+            productDAOs.getProduct(req.params.idProducto)
+                .then((product) => {
                     return res.json({
                         product
                     });
-                }
-            });
+                })
+                .catch((error) => {
+                    return res.status(error.code).json({
+                        message: error.message
+                    });
+                });
         }
     } catch (error) {
         return res.status(500).json({
@@ -85,21 +84,20 @@ export const getProduct = (req, res) => {
 
 export const getProducts = (req, res) => {
     try {
-        const query = "SELECT nombre, precio, fotos FROM producto WHERE estado='public';";
-        database.query(query, (getProductsError, products) => {
-            if (getProductsError) {
-                return res.status(500).json({
-                    message: 'bad request'
-                });
-            } else {
+        productDAOs.getProducts()
+            .then((products) => {
                 return res.json({
-                    products
+                    products: products.products
                 });
-            }
-        });
+            })
+            .catch((error) => {
+                return res.status(error.code).json({
+                    message: error.message
+                });
+            });
     } catch (error) {
         return res.status(500).json({
-            message: 'bad request'
+            message: 'internal server error'
         });
     }
 }

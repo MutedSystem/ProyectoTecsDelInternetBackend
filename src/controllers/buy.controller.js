@@ -1,29 +1,35 @@
 import database from '../database';
 import crypto from 'crypto';
 
+import * as buyDAOs from '../DAO/buy.dao';
+
 export const makeBuy = (req, res) => {
+
     try {
-        if (!req.body.products || !req.body.id || !req.body.date || !req.body.quantityToPay) {
+
+        const {
+            products,
+            id,
+            date,
+            quantityToPay
+        } = req.body;
+
+        if (!products || !id || !date || !quantityToPay) {
             return res.status(400);
         } else {
-            const {
-                products,
-                id,
-                date,
-                quantityToPay
-            } = req.body;
 
             const buyId = crypto.randomUUID();
-            const addBuyQuery = "INSERT INTO `compra`(`idCompra`, `fecha`, `totalAComprar`, `idUsuario`) VALUES ('" + buyId + "','" + date + "','" + quantityToPay + "','" + id + "')";
 
-            database.query(addBuyQuery, (addBuyError, addBuyResult) => {
-                if (addBuyError) {
-                    return res.status(500).json({
-                        message: 'bad request'
-                    });
-                } else {
-                    const productBuyQuery = "INSERT INTO `compraproducto`(`idCompra`, `idProducto`, `cantidad`) VALUES ?";
+            buyDAOs.addBuy([
+                    buyId,
+                    date,
+                    quantityToPay,
+                    id
+                ])
+                .then(() => {
+
                     const productsBuy = [];
+
                     products.forEach(product => {
                         productsBuy.push([
                             buyId,
@@ -32,34 +38,82 @@ export const makeBuy = (req, res) => {
                         ]);
                     });
 
-                    database.query(productBuyQuery, [productsBuy], (productBuyAddqueryError, productBuyQueryResult) => {
-                        if (productBuyAddqueryError) {
-                            return res.status(500).json({
-                                message: 'bad request'
-                            });
-                        } else {
+                    buyDAOs.addProductBuy(productsBuy)
+                        .then(() => {
                             return res.json({
-                                message: 'added'
+                                message: 'buy made'
                             });
-                        }
-                    });
-                }
-            });
+                        })
+                        .catch((error) => {
+                            return res.status(error.code).json({
+                                message: error.message
+                            })
+                        });
 
+                })
+                .catch((error) => {
+                    return res.status(error.code).json({
+                        message: error.message
+                    });
+                })
         }
+
     } catch (error) {
         return res.status(500).json({
-            message: 'something gone wrong'
+            message: 'internal server error'
         });
     }
 }
 
 export const seeBuys = (req, res) => {
     try {
-        if (!req.body.id) {
-            return res.status(400);
-        } else {
 
+        const idUsuario = req.params.idUsuario;
+
+        if (!idUsuario) {
+            return res.status(400).json({
+                message: 'incomplete data'
+            });
+        } else {
+            buyDAOs.seeBuysMade(idUsuario)
+                .then((boughts) => {
+
+                    var currentBuyId = boughts[0].idCompra;
+
+                    const boughtsJson = [];
+
+                    var products = [];
+
+                    boughts.forEach((bought) => {
+                        if (currentBuyId !== bought.idCompra) {
+                            boughtsJson.push({
+                                total: bought.totalAComprar,
+                                date: bought.fecha,
+                                products
+                            });
+                            currentBuyId = bought.idCompra;
+                            products = [];
+                        }
+
+                        products.push({
+                            name: bought.nombre,
+                            description: bought.descripcion,
+                            quantity: bought.cantidad,
+                            photoUrl : JSON.parse(bought.fotos).photosUrl[0]
+                        })
+                    })
+
+                    return res.json({
+                        boughtsJson
+                    });
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                    return res.status(error.code).json({
+                        message: error.message
+                    })
+                })
         }
     } catch (error) {
         return res.status(500).json({
