@@ -23,7 +23,7 @@ export const singup = (req, res) => {
 
             authDaos.verifyUserRegistered(email)
                 .then((userCountResult) => {
-                    if (userCountResult.countUser >= 0) {
+                    if (userCountResult.countUser > 0) {
                         return res.status(419).json({
                             message: 'user already exists'
                         });
@@ -51,7 +51,7 @@ export const singup = (req, res) => {
                     }
                 })
                 .catch((emailRegisteredError) => {
-                    return res.status(emailRegisteredError.code).json({
+                    return res.status(500).json({
                         message: emailRegisteredError.message
                     });
                 });
