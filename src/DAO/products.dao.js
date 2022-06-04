@@ -49,10 +49,19 @@ export const createProduct = (productInfo) => {
             if (addProductError) {
                 reject({
                     code: 500,
-                    message : 'internal server error'
+                    message: 'internal server error'
                 });
             } else {
-                resolve(true);
+                database.query("SELECT idProducto FROM producto WHERE fotos LIKE ?", productInfo[0][3], (getIdError, Id) => {
+                    if (getIdError) {
+                        reject({
+                            code: 500,
+                            message: 'internal server error'
+                        });
+                    }else{
+                        resolve(Id);
+                    }
+                })
             }
         });
     });

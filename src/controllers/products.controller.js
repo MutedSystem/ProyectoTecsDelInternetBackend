@@ -38,9 +38,10 @@ export const createProduct = (req, res) => {
             ];
 
             productDAOs.createProduct(productInfo)
-                .then(() => {
+                .then((id) => {
                     return res.json({
-                        message: 'product correctly added'
+                        message: 'product correctly added',
+                        id
                     });
                 })
                 .catch((error) => {
