@@ -101,6 +101,7 @@ CREATE TABLE IF NOT EXISTS `producto` (
   `nombre` varchar(255) NOT NULL,
   `precio` int(11) NOT NULL,
   `fotos` text NOT NULL,
+  `estado` text NOT NULL,
   PRIMARY KEY (`idProducto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 

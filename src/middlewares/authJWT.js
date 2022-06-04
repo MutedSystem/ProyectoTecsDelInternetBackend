@@ -11,7 +11,7 @@ export const verifyUserToken = (req, res, next) => {
             return res.status(403).json({ message: "No token provided" });
         }else{
             jwt.verify(token, config.SECRET, (tokerError, tokenDecoded) => {
-                if (tokerError) return res.status(401).json({
+                if (tokerError) return res.status(403).json({
                     message: 'invalid token'
                 });
     

@@ -65,7 +65,7 @@ export const singinUserInfo = (userEmail) => {
             });
         } else {
 
-            const query = "SELECT idUsuario, contrasena FROM usuario WHERE correo LIKE ?";
+            const query = "SELECT idUsuario, contrasena, nombre FROM usuario WHERE correo LIKE ?";
 
             database.query(query, userEmail, (getUserInfoError, userInfo) => {
                 if (getUserInfoError) {
@@ -77,7 +77,8 @@ export const singinUserInfo = (userEmail) => {
                     if (userInfo.length >= 1) {
                         resolve({
                             id : userInfo[0].idUsuario,
-                            password : userInfo[0].contrasena
+                            password : userInfo[0].contrasena,
+                            name: userInfo[0].nombre
                         });
                     } else {
                         reject({

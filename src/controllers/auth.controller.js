@@ -1,5 +1,5 @@
 import config from '../config';
-import crypto from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -30,7 +30,7 @@ export const singup = (req, res) => {
                     } else {
                         const values = [
                             [
-                                crypto.randomUUID(),
+                                uuidv4(),
                                 phone,
                                 email,
                                 bcrypt.hashSync(password, 10),
@@ -84,7 +84,8 @@ export const singin = (req, res) => {
                                     id: userInfo.id
                                 }, config.SECRET);
                                 return res.json({
-                                    token
+                                    token,
+                                    name: userInfo.name
                                 });
                             } else {
                                 return res.status(401).json({

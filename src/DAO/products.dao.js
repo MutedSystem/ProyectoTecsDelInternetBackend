@@ -52,7 +52,7 @@ export const createProduct = (productInfo) => {
                     message: 'internal server error'
                 });
             } else {
-                database.query("SELECT idProducto FROM producto WHERE fotos LIKE ?", productInfo[0][3], (getIdError, Id) => {
+                database.query("SELECT idProducto,fotos FROM producto WHERE fotos LIKE ?", productInfo[0][3], (getIdError, Id) => {
                     if (getIdError) {
                         reject({
                             code: 500,

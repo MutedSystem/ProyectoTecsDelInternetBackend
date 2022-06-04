@@ -18,11 +18,10 @@ export const createProduct = (req, res) => {
             });
         } else {
 
-
             const photosUrl = [];
 
             req.files.forEach(file => {
-                photosUrl.push(("localhost:54215" || process.env.PORT) + "/productImages/" + file.filename);
+                photosUrl.push(("http://localhost:54215" || process.env.PORT) + "/productImages/" + file.filename);
             });
 
             const productInfo = [

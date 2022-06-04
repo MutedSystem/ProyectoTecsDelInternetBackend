@@ -9,7 +9,8 @@ export const addBuy = (buyData) => {
             if (addBuyError) {
                 reject({
                     code: 500,
-                    message: 'internal server error'
+                    message: 'internal server error',
+                    addBuyError
                 });
             } else {
                 resolve(true);
@@ -28,8 +29,9 @@ export const addProductBuy = (productBuyInfo) => {
             if (productBuyAddqueryError) {
                 reject({
                     code: 500,
-                    message: 'internal server error'
-                })
+                    message: 'internal server error',
+                    productBuyAddqueryError
+                });
             } else {
                 resolve(true);
             }

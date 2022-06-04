@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authJWT, productsImageUpload } from '../middlewares/index';
+import { productsImageUpload } from '../middlewares/index';
 
 import * as productController from '../controllers/products.controller';
 
