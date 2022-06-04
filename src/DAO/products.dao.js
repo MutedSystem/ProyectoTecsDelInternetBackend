@@ -2,7 +2,7 @@ import database from '../database';
 
 export const getProducts = () => {
     return new Promise((resolve, reject) => {
-        const query = "SELECT nombre, precio, fotos FROM producto WHERE estado='public';";
+        const query = "SELECT idProducto,nombre, precio, fotos FROM producto WHERE estado='public';";
         database.query(query, (getProductsError, products) => {
             if (getProductsError) {
                 reject({
@@ -20,7 +20,7 @@ export const getProducts = () => {
 
 export const getProduct = (idProducto) => {
     return new Promise((resolve, reject) => {
-        const query = "SELECT nombre, precio, fotos FROM producto WHERE idProducto=?;";
+        const query = "SELECT nombre, precio, fotos, descripcion FROM producto WHERE idProducto=?;";
         database.query(query, idProducto, (getProductError, product) => {
             if (getProductError) {
                 reject({
